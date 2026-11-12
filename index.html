@@ -2,13 +2,18 @@
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#061827"><title>ARENA — Torneio de Vôlei de Praia</title>
 <style>
 :root{--bg:#061827;--panel:#10283a;--line:#23445a;--muted:#8ca5b6;--white:#f5f7f2;--lime:#d7ff62;--orange:#ff9d5c;--red:#ff6f70;--blue:#7bd4ff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -30%,#16415a 0,transparent 55%),var(--bg);color:var(--white);font:16px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}.wrap{width:min(1120px,94vw);margin:auto;padding:26px 0 44px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}.brand{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:800;letter-spacing:.16em}.mark{width:36px;height:36px;border:1px solid var(--lime);border-radius:50%;display:grid;place-items:center;color:var(--lime);font-size:19px}.live,.eyebrow{color:var(--lime);font-size:11px;letter-spacing:.17em;text-transform:uppercase}.heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:20px}.heading h1{font-size:clamp(25px,4vw,40px);line-height:1.1;margin:5px 0 0;letter-spacing:-.04em}.format{color:var(--muted);font-size:13px;text-align:right}.board,.card,.setup,.bracketbox{border:1px solid var(--line);border-radius:18px;background:linear-gradient(135deg,rgba(21,52,72,.94),rgba(10,31,47,.97));box-shadow:0 20px 70px #0002}.setup,.card,.bracketbox{padding:22px}.board{overflow:hidden}.setsbar{height:60px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:10px}.setpill{border:1px solid var(--line);border-radius:99px;padding:6px 14px;color:var(--muted);font-size:12px;letter-spacing:.08em}.setpill.active{background:#d7ff6218;border-color:#d7ff6270;color:var(--lime)}.scoregrid{display:grid;grid-template-columns:1fr 1fr}.team{padding:clamp(18px,5vw,48px);text-align:center}.team+.team{border-left:1px solid var(--line)}.teamname{font-size:clamp(19px,4vw,31px);font-weight:800;letter-spacing:-.04em;overflow-wrap:anywhere}.players{color:var(--muted);font-size:12px;min-height:18px}.serve{font-size:11px;color:var(--lime);min-height:20px;margin-top:4px;letter-spacing:.08em}.score{font-variant-numeric:tabular-nums;font-size:clamp(90px,19vw,190px);line-height:1;font-weight:800;letter-spacing:-.09em;margin:9px 0 16px}.score.winner{color:var(--lime)}button{font:inherit;cursor:pointer;color:inherit}.point{background:var(--lime);color:#11200d;border:0;border-radius:11px;font-weight:800;font-size:15px;padding:13px 22px;min-width:145px}.minus{display:block;margin:10px auto 0;background:transparent;color:var(--muted);border:0;font-size:12px;text-decoration:underline}.controls{display:flex;justify-content:center;align-items:center;gap:9px;padding:14px;border-top:1px solid var(--line);background:#071d2c}.soft,.selectbtn{background:#102d41;border:1px solid var(--line);border-radius:9px;padding:9px 13px;font-size:12px;color:#d6e1e8}.soft:hover,.selectbtn:hover{border-color:#54809b}.lower{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:16px}.card h2,.setup h2,.bracketbox h2{margin:0;font-size:14px;letter-spacing:.1em;text-transform:uppercase}.cardhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.counterrow{display:grid;grid-template-columns:1fr 1fr;gap:9px}.counter{background:#102b40;border-radius:10px;padding:11px}.counterlabel{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}.counter b{font-size:17px}.faultform{margin-top:15px;padding-top:13px;border-top:1px solid var(--line)}.fieldlabel{font-size:11px;color:var(--muted);display:block;margin:0 0 6px}.formrow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}select,input{font:inherit;color:var(--white);background:#081d2d;border:1px solid var(--line);border-radius:8px;padding:10px;width:100%;outline:none}select:focus,input:focus{border-color:var(--blue)}.faultactions{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:7px}.faultactions button{font-size:11px;padding:10px 6px}.yellow{border-color:#a98737;color:#ffe27b}.redcard{border-color:#a54551;color:#ff9293}.log{max-height:210px;overflow:auto;list-style:none;margin:0;padding:0}.log li{padding:8px 2px;border-bottom:1px solid #18384c;font-size:12px;color:#d5e0e7;display:flex;justify-content:space-between;gap:10px}.empty{color:var(--muted);font-size:12px;padding:12px 0}.note{font-size:11px;color:var(--muted);margin:10px 0 0}.hidden{display:none!important}.setupintro{color:var(--muted);font-size:13px;margin:6px 0 18px}.modepick{display:flex;gap:8px;margin:10px 0 18px}.modepick button{flex:1}.modepick button.selected{background:#d7ff6218;border-color:#d7ff62;color:var(--lime)}.teamsform{display:grid;grid-template-columns:1fr 1fr;gap:12px}.teamedit{border:1px solid var(--line);background:#0a2030;border-radius:12px;padding:14px}.teamedithead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}.teamedithead input{font-weight:700}.playersedit{display:grid;grid-template-columns:1fr 1fr;gap:7px}.playersedit input{font-size:12px;padding:8px}.setupactions{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:16px}.primary{background:var(--lime);color:#12200d;border:0;border-radius:10px;font-weight:800;padding:12px 18px}.bracketbox{margin-top:16px}.bracketrounds{display:flex;gap:12px;overflow:auto;padding:15px 2px 8px;align-items:stretch}.round{min-width:220px;max-width:260px;flex:1}.round h3{font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin:0 0 10px}.matchcard{background:#0a2030;border:1px solid var(--line);border-radius:11px;padding:11px;margin:0 0 9px}.matchcard.current{border-color:#d7ff6280}.matchcard.done{opacity:.8}.matchside{font-size:12px;padding:5px 7px;border-radius:6px}.matchside.won{color:var(--lime);background:#d7ff6210}.matchmeta{color:var(--muted);font-size:10px;margin-top:5px}.matchcard button{width:100%;margin-top:8px}.podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:16px 0}.medal{background:#0a2030;border:1px solid var(--line);border-radius:12px;text-align:center;padding:15px 8px}.medal strong{display:block;font-size:11px;color:var(--muted);letter-spacing:.12em}.medal span{display:block;font-weight:800;margin-top:6px}.medal.first{border-color:#b9a74e}.finalbuttons{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:10px 0}.sidealert{text-align:center;color:var(--orange);font-size:12px;min-height:18px;padding:5px}.rules{margin-top:18px;border:1px solid var(--line);border-radius:14px;background:#0b2030;overflow:hidden}.rules summary{cursor:pointer;padding:14px 17px;font-size:13px;font-weight:700}.rulebody{padding:0 17px 17px;color:var(--muted);font-size:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.rulebody b{color:#e7eff3}.footer{text-align:center;color:#658093;font-size:11px;margin-top:20px}@media(max-width:650px){.wrap{padding-top:17px}.top{margin-bottom:20px}.heading{align-items:start}.format{max-width:128px}.teamsform,.lower{grid-template-columns:1fr}.team{padding:22px 10px}.point{min-width:0;width:100%;padding:12px 4px;font-size:13px}.score{margin:14px 0}.controls{flex-wrap:wrap}.setupactions{align-items:stretch;flex-direction:column}.podium{gap:5px}.medal{font-size:12px}.rulebody{grid-template-columns:1fr}}
-</style></head><body><main class="wrap"><header class="top"><div class="brand"><span class="mark">↗</span> ARENA <span style="color:var(--muted);font-weight:500">/ BEACH VOLLEY</span></div><div class="live">● &nbsp;TORNEIO</div></header>
+.authbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}.authstatus{color:var(--muted);font-size:12px}.authpanel{margin:-12px 0 20px}.authform{display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,1fr) auto;gap:9px;align-items:end}.authmessage{color:var(--orange);font-size:12px;min-height:18px;margin:8px 0 0}@media(max-width:650px){.authform{grid-template-columns:1fr}}
+</style></head><body><main class="wrap"><header class="top"><div class="brand"><span class="mark">↗</span> ARENA <span style="color:var(--muted);font-weight:500">/ BEACH VOLLEY</span></div><div class="authbar"><span id="authStatus" class="authstatus">Conectando ao Supabase…</span><button id="loginToggle" class="soft">Entrar</button><button id="logoutBtn" class="soft hidden">Sair</button></div></header><section id="loginPanel" class="setup authpanel hidden"><h2>Acesso do árbitro</h2><p class="setupintro">Entre com sua conta cadastrada no Supabase.</p><form id="loginForm" class="authform"><label><span class="fieldlabel">E-MAIL</span><input id="loginEmail" type="email" autocomplete="username" required></label><label><span class="fieldlabel">SENHA</span><input id="loginPassword" type="password" autocomplete="current-password" required></label><button class="primary" type="submit">Entrar</button></form><p id="authMessage" class="authmessage" aria-live="polite"></p></section>
 <div class="heading"><div><div class="eyebrow">Placar eletrônico</div><h1>Vôlei de praia</h1></div><div class="format">Melhor de 3 sets<br>Rally point · Sem cronômetro</div></div>
-<section id="setupView" class="setup"><h2>Monte seu torneio</h2><p class="setupintro">Escolha a modalidade, cadastre os grupos e sorteie as partidas.</p><span class="fieldlabel">MODALIDADE</span><div class="modepick"><button class="soft selected" data-mode="2">Duplas · 2x2</button><button class="soft" data-mode="4">Quartetos · 4x4</button></div><div class="cardhead"><h2>Grupos participantes</h2><button class="soft" id="addTeam">+ Adicionar grupo</button></div><div id="teamsForm" class="teamsform"></div><div class="setupactions"><span class="note">Mínimo de 2 grupos. Os nomes dos atletas são opcionais.</span><button class="primary" id="drawBtn">🎲 &nbsp;Sortear chaveamento</button></div></section>
+<section id="viewerEmpty" class="setup"><h2>Placar do torneio</h2><p class="setupintro">O placar será exibido aqui quando um administrador iniciar o torneio.</p></section><section id="setupView" class="setup hidden"><h2>Monte seu torneio</h2><p class="setupintro">Escolha a modalidade, cadastre os grupos e sorteie as partidas.</p><span class="fieldlabel">MODALIDADE</span><div class="modepick"><button class="soft selected" data-mode="2">Duplas · 2x2</button><button class="soft" data-mode="4">Quartetos · 4x4</button></div><div class="cardhead"><h2>Grupos participantes</h2><button class="soft" id="addTeam">+ Adicionar grupo</button></div><div id="teamsForm" class="teamsform"></div><div class="setupactions"><span class="note">Mínimo de 2 grupos. Os nomes dos atletas são opcionais.</span><button class="primary" id="drawBtn">🎲 &nbsp;Sortear chaveamento</button></div></section>
 <section id="tournamentView" class="hidden"><div class="finalbuttons"><button class="soft" id="newDraw">🎲 Novo sorteio · mesmos grupos</button><button class="soft" id="newTournament">＋ Novo torneio · novos grupos</button></div><div id="playArea"></div><div class="bracketbox"><div class="cardhead"><h2>Chaveamento</h2><span id="modeLabel" class="eyebrow"></span></div><div id="bracket" class="bracketrounds"></div></div></section>
 <details class="rules"><summary>Regras aplicadas</summary><div class="rulebody"><div><b>Quadra e rede</b><br>Quadra de areia com 16 × 8 m. Altura da rede: 2,43 m no masculino e 2,24 m no feminino.</div><div><b>Equipes e bola</b><br>2 ou 4 atletas por grupo conforme modalidade. Bola com 65–67 cm e 260–280 g.</div><div><b>Formato</b><br>Melhor de 3 sets: sets 1 e 2 até 21 pontos; o terceiro até 15, sempre com 2 pontos de vantagem.</div><div><b>Alternância de lado</b><br>A cada 7 pontos somados nos sets 1 e 2; a cada 5 no set decisivo.</div><div><b>Toques e saque</b><br>Até 3 toques por equipe, incluindo o bloqueio. Saque em até 8 segundos após autorização.</div><div><b>Faltas e sanções</b><br>Faltas e cartões ficam no registro. A arbitragem define sanções e eventual ponto.</div></div></details><footer class="footer">Regras baseadas no Vôlei de Praia FIVB 2025–2028 · Cartões registrados para controle da arbitragem.</footer></main>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let mode=2,formTeams=[];let tournament=null;
+const SUPABASE_URL="COLE_A_URL_DO_SEU_PROJETO";
+const SUPABASE_ANON_KEY="COLE_A_CHAVE_PUBLISHABLE_OU_ANON";
+const LIVE_TOURNAMENT_ID="00000000-0000-4000-8000-000000000001";
+let supabaseClient=null,currentUser=null,isAdmin=false,suppressSave=false,saveTimer=null,lastTournamentJson=null;
 function newGame(){return {set:0,points:[0,0],sets:[0,0,0],setScores:[[],[],[]],faults:[0,0],yellow:[0,0],red:[0,0],log:[],server:0,swaps:0,history:[],over:false}}
 function addFormTeam(){formTeams.push({name:'Grupo '+String.fromCharCode(65+formTeams.length),players:Array(Number(mode)).fill('')});renderForm()}
 function renderForm(){ $('#teamsForm').innerHTML=formTeams.map((t,i)=>`<div class="teamedit"><div class="teamedithead"><input aria-label="Nome do grupo" value="${esc(t.name)}" data-name="${i}" placeholder="Nome do grupo">${formTeams.length>2?`<button class="soft" data-remove="${i}" title="Remover grupo">×</button>`:''}</div><div class="playersedit">${t.players.map((p,j)=>`<input value="${esc(p)}" data-player="${i},${j}" placeholder="Atleta ${j+1}">`).join('')}</div></div>`).join('');document.querySelectorAll('[data-name]').forEach(e=>e.oninput=()=>formTeams[+e.dataset.name].name=e.value);document.querySelectorAll('[data-player]').forEach(e=>e.oninput=()=>{let [i,j]=e.dataset.player.split(',').map(Number);formTeams[i].players[j]=e.value});document.querySelectorAll('[data-remove]').forEach(e=>e.onclick=()=>{formTeams.splice(+e.dataset.remove,1);renderForm()})}
@@ -30,5 +35,100 @@ function removePoint(i){let g=activeMatch().game;if(!g.points[i]||g.over)return;
 function reg(type){let m=activeMatch(),g=m.game,i=+$('#faultTeam').value,kind=$('#faultType').value,n=team(i===0?m.a:m.b).name;snapshot();if(type==='fault'){g.faults[i]++;log(`Falta · ${kind} · ${n}`)}else if(type==='yellow'){g.yellow[i]++;log(`Cartão amarelo · ${kind} · ${n}`)}else{g.red[i]++;log(`Cartão vermelho · ${kind} · ${n}`)}renderTournament()}
 $('#drawBtn').onclick=()=>{if(formTeams.length<2){alert('Cadastre pelo menos dois grupos para sortear.');return}startTournament()};$('#newDraw').onclick=()=>{if(confirm('Sortear uma nova chave com os mesmos grupos? O placar atual será reiniciado.')){formTeams=tournament.teams.map(t=>({name:t.name,players:Array(mode).fill('').map((_,i)=>t.players[i]||'')}));mode=tournament.mode;tournament=null;document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('selected',+b.dataset.mode===mode));renderForm();$('#tournamentView').classList.add('hidden');$('#setupView').classList.remove('hidden');startTournament()}};$('#newTournament').onclick=()=>{if(confirm('Encerrar este torneio e cadastrar novos grupos?')){tournament=null;formTeams=[];mode=2;addFormTeam();addFormTeam();document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('selected',+b.dataset.mode===mode));$('#tournamentView').classList.add('hidden');$('#setupView').classList.remove('hidden')}};
 addFormTeam();addFormTeam();
-</script></body></html>
+function setAuthMessage(message){const el=$('#authMessage');if(el)el.textContent=message||''}
+function renderAccess(){
+  $('#authStatus').textContent=currentUser?(isAdmin?'Administrador · '+currentUser.email:'Visualizador · '+currentUser.email):'Visitante · somente leitura';
+  $('#loginToggle').classList.toggle('hidden',!!currentUser);
+  $('#logoutBtn').classList.toggle('hidden',!currentUser);
+  $('#setupView').classList.toggle('hidden',!isAdmin||!!tournament);
+  $('#viewerEmpty').classList.toggle('hidden',!!tournament||isAdmin);
+  $('#tournamentView').classList.toggle('hidden',!tournament);
+  if(tournament)$('#loginPanel').classList.add('hidden');
+}
+async function loadTournament(){
+  if(!supabaseClient)return;
+  const {data,error}=await supabaseClient.from('arena_tournaments').select('data').eq('id',LIVE_TOURNAMENT_ID).maybeSingle();
+  if(error){setAuthMessage('Não foi possível carregar o placar: '+error.message);return}
+  const next=data?.data||null,nextJson=JSON.stringify(next);
+  if(nextJson===lastTournamentJson)return;
+  suppressSave=true;
+  tournament=next;
+  lastTournamentJson=nextJson;
+  renderAccess();
+  if(tournament)renderTournament();
+  suppressSave=false;
+}
+function queueTournamentSave(){
+  if(!isAdmin||!tournament||!supabaseClient||suppressSave)return;
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    const snapshot=JSON.parse(JSON.stringify(tournament));
+    const {error}=await supabaseClient.from('arena_tournaments').upsert({id:LIVE_TOURNAMENT_ID,data:snapshot,updated_at:new Date().toISOString()},{onConflict:'id'});
+    if(error){setAuthMessage('Falha ao salvar no Supabase: '+error.message);return}
+    lastTournamentJson=JSON.stringify(snapshot);
+    setAuthMessage('Placar salvo.');
+  },350);
+}
+async function applySession(session){
+  currentUser=session?.user||null;
+  isAdmin=false;
+  if(currentUser&&supabaseClient){
+    const {data,error}=await supabaseClient.from('arena_admins').select('user_id').eq('user_id',currentUser.id).maybeSingle();
+    if(error)setAuthMessage('Não foi possível verificar a permissão de administrador: '+error.message);
+    isAdmin=!!data;
+  }
+  renderAccess();
+  await loadTournament();
+  suppressSave=true;
+  if(tournament)renderTournament();
+  suppressSave=false;
+  renderAccess();
+}
+async function initializeSupabase(){
+  if(!window.supabase||SUPABASE_URL.includes('COLE_')||SUPABASE_ANON_KEY.includes('COLE_')){
+    $('#authStatus').textContent='Configure a URL e a chave pública do Supabase';
+    setAuthMessage('Edite SUPABASE_URL e SUPABASE_ANON_KEY no index.html usando a URL e a chave publishable/anon do projeto.');
+    return;
+  }
+  supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  const {data,error}=await supabaseClient.auth.getSession();
+  if(error)setAuthMessage(error.message);
+  await applySession(data?.session||null);
+  supabaseClient.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>applySession(session),0)});
+  setInterval(()=>{if(!isAdmin)loadTournament()},5000);
+}
+$('#loginToggle').onclick=()=>{$('#loginPanel').classList.toggle('hidden');setAuthMessage('')};
+$('#logoutBtn').onclick=async()=>{if(supabaseClient){const {error}=await supabaseClient.auth.signOut();if(error)setAuthMessage(error.message)}};
+$('#loginForm').onsubmit=async event=>{
+  event.preventDefault();
+  if(!supabaseClient){setAuthMessage('Configure primeiro o acesso ao Supabase.');return}
+  setAuthMessage('Entrando…');
+  const {error}=await supabaseClient.auth.signInWithPassword({email:$('#loginEmail').value.trim(),password:$('#loginPassword').value});
+  if(error){setAuthMessage('Não foi possível entrar. Confira e-mail e senha.');return}
+  $('#loginPassword').value='';
+  $('#loginPanel').classList.add('hidden');
+};
+const originalRenderTournament=renderTournament;
+renderTournament=function(){
+  originalRenderTournament();
+  document.querySelectorAll('.finalbuttons').forEach(el=>el.classList.toggle('hidden',!isAdmin));
+  if(!isAdmin){
+    document.querySelectorAll('[data-play],.point,.minus,#undo,#switchSides,#clearScore,.faultform').forEach(el=>el.remove());
+  }
+  queueTournamentSave();
+  renderAccess();
+};
+const originalStartTournament=startTournament;
+startTournament=function(){if(isAdmin)originalStartTournament()};
+const originalSelectMatch=selectMatch;
+selectMatch=function(id){if(isAdmin){originalSelectMatch(id);queueTournamentSave()}};
+for(const name of ['scorePoint','removePoint','undo','reg']){
+  const original=window[name]||eval(name);
+  window[name]=function(...args){if(isAdmin)return original(...args)};
+}
+for(const selector of ['#drawBtn','#newDraw','#newTournament','#addTeam']){
+  const button=$(selector),original=button.onclick;
+  button.onclick=function(event){if(isAdmin&&original)return original.call(this,event)};
+}
+initializeSupabase();</script></body></html>
 
