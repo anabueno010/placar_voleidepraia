@@ -8,10 +8,10 @@
 <section id="viewerEmpty" class="setup"><h2>Placar do torneio</h2><p class="setupintro">O placar será exibido aqui quando um administrador iniciar o torneio.</p></section><section id="setupView" class="setup hidden"><h2>Monte seu torneio</h2><p class="setupintro">Escolha a modalidade, cadastre os grupos e sorteie as partidas.</p><span class="fieldlabel">MODALIDADE</span><div class="modepick"><button class="soft selected" data-mode="2">Duplas · 2x2</button><button class="soft" data-mode="4">Quartetos · 4x4</button></div><div class="cardhead"><h2>Grupos participantes</h2><button class="soft" id="addTeam">+ Adicionar grupo</button></div><div id="teamsForm" class="teamsform"></div><div class="setupactions"><span class="note">Mínimo de 2 grupos. Os nomes dos atletas são opcionais.</span><button class="primary" id="drawBtn">🎲 &nbsp;Sortear chaveamento</button></div></section>
 <section id="tournamentView" class="hidden"><div class="finalbuttons"><button class="soft" id="newDraw">🎲 Novo sorteio · mesmos grupos</button><button class="soft" id="newTournament">＋ Novo torneio · novos grupos</button></div><div id="playArea"></div><div class="bracketbox"><div class="cardhead"><h2>Chaveamento</h2><span id="modeLabel" class="eyebrow"></span></div><div id="bracket" class="bracketrounds"></div></div></section>
 <details class="rules"><summary>Regras aplicadas</summary><div class="rulebody"><div><b>Quadra e rede</b><br>Quadra de areia com 16 × 8 m. Altura da rede: 2,43 m no masculino e 2,24 m no feminino.</div><div><b>Equipes e bola</b><br>2 ou 4 atletas por grupo conforme modalidade. Bola com 65–67 cm e 260–280 g.</div><div><b>Formato</b><br>Melhor de 3 sets: sets 1 e 2 até 21 pontos; o terceiro até 15, sempre com 2 pontos de vantagem.</div><div><b>Alternância de lado</b><br>A cada 7 pontos somados nos sets 1 e 2; a cada 5 no set decisivo.</div><div><b>Toques e saque</b><br>Até 3 toques por equipe, incluindo o bloqueio. Saque em até 8 segundos após autorização.</div><div><b>Faltas e sanções</b><br>Faltas e cartões ficam no registro. A arbitragem define sanções e eventual ponto.</div></div></details><footer class="footer">Regras baseadas no Vôlei de Praia FIVB 2025–2028 · Cartões registrados para controle da arbitragem.</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+<script src="./supabase-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let mode=2,formTeams=[];let tournament=null;
-const SUPABASE_URL="COLE_A_URL_DO_SEU_PROJETO";
-const SUPABASE_ANON_KEY="COLE_A_CHAVE_PUBLISHABLE_OU_ANON";
+const SUPABASE_URL=window.ARENA_SUPABASE_CONFIG?.url||"";
+const SUPABASE_ANON_KEY=window.ARENA_SUPABASE_CONFIG?.anonKey||"";
 const LIVE_TOURNAMENT_ID="00000000-0000-4000-8000-000000000001";
 let supabaseClient=null,currentUser=null,isAdmin=false,suppressSave=false,saveTimer=null,lastTournamentJson=null;
 function newGame(){return {set:0,points:[0,0],sets:[0,0,0],setScores:[[],[],[]],faults:[0,0],yellow:[0,0],red:[0,0],log:[],server:0,swaps:0,history:[],over:false}}
@@ -131,4 +131,5 @@ for(const selector of ['#drawBtn','#newDraw','#newTournament','#addTeam']){
   button.onclick=function(event){if(isAdmin&&original)return original.call(this,event)};
 }
 initializeSupabase();</script></body></html>
+
 
