@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - "index.html"
+      - "scoreboard.js"
+      - "central-api.js"
+      - "supabase-config.js"
       - "assets/**"
       - "images/**"
       - ".github/workflows/pages.yml"
@@ -39,6 +42,7 @@ jobs:
         run: |
           mkdir -p _site
           cp index.html _site/index.html
+          cp scoreboard.js central-api.js supabase-config.js _site/
           if [ -d assets ]; then cp -R assets _site/assets; fi
           if [ -d images ]; then cp -R images _site/images; fi
           touch _site/.nojekyll
