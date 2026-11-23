@@ -342,7 +342,110 @@ function centralClearToken() {
   clearTimeout(centralSyncTimer);
   const input = $('#centralToken');
   if (input) input.value = '';
-  centralSetStatus('Token removido da memória. Informe-o novamente para sincronizar.');
+  centralSetStatus('Token removido da memória desta sessão. Use “Carregar salvo” para recuperá-lo.');
+}
+
+async function centralLoadSavedToken() {
+  if (!isAdmin || !supabaseClient) {
+    centralClearToken();
+    return false;
+  }
+
+  const adminId = currentUser.id;
+  let result;
+  try {
+    result = await supabaseClient
+      .from('arena_central_api_credentials')
+      .select('token')
+      .eq('id', 1)
+      .maybeSingle();
+  } catch (error) {
+    centralSetStatus(`Não foi possível carregar o token salvo: ${error.message}`);
+    return false;
+  }
+
+  if (result.error) {
+    centralSetStatus('Não foi possível carregar o token salvo. Confira se a migração de credenciais da API central foi aplicada.');
+    return false;
+  }
+  if (!isAdmin || currentUser?.id !== adminId) return false;
+  if (!result.data?.token) {
+    centralApiToken = '';
+    clearInterval(centralPollTimer);
+    centralSetStatus('Nenhum token salvo. Informe o token do grupo e salve para carregar nas próximas sessões.');
+    return false;
+  }
+
+  centralApiToken = result.data.token;
+  centralStartPolling();
+  centralSetStatus('Token carregado do Supabase para esta sessão.');
+  if (currentMatch?.centralApiId) await centralPoll();
+  centralRenderAccess();
+  return true;
+}
+
+async function centralSaveToken(token) {
+  if (!isAdmin || !supabaseClient || !currentUser) {
+    centralSetStatus('Entre com uma conta autorizada de árbitro para salvar o token.');
+    return false;
+  }
+
+  const adminId = currentUser.id;
+  let result;
+  try {
+    result = await supabaseClient
+      .from('arena_central_api_credentials')
+      .upsert({
+        id: 1,
+        token,
+        updated_at: new Date().toISOString(),
+        updated_by: currentUser.id
+      }, { onConflict: 'id' });
+  } catch (error) {
+    centralSetStatus(`Não foi possível salvar o token no Supabase: ${error.message}`);
+    return false;
+  }
+
+  if (result.error) {
+    centralSetStatus('Não foi possível salvar o token. Confira sua permissão de árbitro e se a migração de credenciais foi aplicada.');
+    return false;
+  }
+
+  if (!isAdmin || currentUser?.id !== adminId) return false;
+  centralApiToken = token;
+  centralStartPolling();
+  centralSetStatus('Token salvo no Supabase e carregado nesta sessão.');
+  if (currentMatch?.centralApiId) await centralPoll();
+  centralRenderAccess();
+  return true;
+}
+
+async function centralDeleteSavedToken() {
+  if (!isAdmin || !supabaseClient) {
+    centralSetStatus('Entre com uma conta autorizada de árbitro para remover o token salvo.');
+    return;
+  }
+  if (!confirm('Remover o token salvo no Supabase?')) return;
+
+  const adminId = currentUser.id;
+  let result;
+  try {
+    result = await supabaseClient
+      .from('arena_central_api_credentials')
+      .delete()
+      .eq('id', 1);
+  } catch (error) {
+    centralSetStatus(`Não foi possível remover o token salvo: ${error.message}`);
+    return;
+  }
+  if (result.error) {
+    centralSetStatus('Não foi possível remover o token salvo no Supabase.');
+    return;
+  }
+  if (!isAdmin || currentUser?.id !== adminId) return;
+
+  centralClearToken();
+  centralSetStatus('Token removido do Supabase e da memória desta sessão.');
 }
 
 function centralOnMatchLoaded(match) {
@@ -368,16 +471,12 @@ function setupCentralIntegration() {
       centralSetStatus('Informe o token do grupo.');
       return;
     }
-    centralApiToken = token;
-    centralSetStatus('Token mantido somente na memória. Verificando a conexão…');
-    centralStartPolling();
-    if (currentMatch?.centralApiId) await centralPoll();
-    else centralSetStatus(currentMatch?.centralApiCreateState === 'uncertain'
-      ? 'Token configurado. Criação anterior incerta: verifique o resultado antes de tentar novamente.'
-      : 'Token mantido na memória; ainda não validado pela API porque não há placar associado.');
-    centralRenderAccess();
+    centralSetStatus('Salvando token no Supabase…');
+    await centralSaveToken(token);
   };
 
+  $('#centralLoadSaved').onclick = () => { void centralLoadSavedToken(); };
+  $('#centralDeleteSaved').onclick = () => { void centralDeleteSavedToken(); };
   $('#centralRetry').onclick = async () => {
     if (!currentMatch) return;
     if (currentMatch.centralApiId) await centralPoll();
