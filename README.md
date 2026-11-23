@@ -28,3 +28,12 @@ Antes do teste, solicite ao professor a autorização da origem exata do site: p
 Erros HTTP e de rede são indicados no painel e os dados locais são preservados. Uma falha ambígua durante o POST bloqueia a repetição automática; confira o monitor/API com o professor antes de usar a ação de nova tentativa confirmada. O ID vinculado permite consultar e sincronizar novamente, e o painel exibe a última confirmação. O polling ocorre a cada 15 segundos enquanto a página está aberta e o token está ativo.
 
 Antes de publicar, aplique as migrações `20261123000000_add_central_api_credentials.sql` e `20261123120000_allow_all_authenticated_referees.sql` (o workflow de deploy de migrações executa isso ao enviar alterações em `supabase/**`). Qualquer usuário autenticado pode ver o painel, carregar/salvar o token e alterar partidas/torneios. Os testes reais de API dependem do token do grupo e da autorização CORS do professor. Nenhum token real foi incluído ou usado durante o desenvolvimento.
+
+### Configuração do deploy de migrações
+
+O workflow `.github/workflows/supabase-deploy.yml` usa o ambiente GitHub Actions `production`. Em **Settings → Environments → production**, configure:
+
+- **Secrets** `SUPABASE_ACCESS_TOKEN` (access token da conta Supabase) e `SUPABASE_DB_PASSWORD` (senha do banco do projeto).
+- **Variable** `SUPABASE_PROJECT_ID` (project ref do projeto, não a URL).
+
+Não cole esses valores em issues, chats, arquivos versionados ou logs. Sem esses três valores o workflow não consegue vincular o Supabase nem executar `supabase db push`; após configurá-los, use **Actions → Deploy Supabase migrations → Run workflow** para aplicar migrações já enviadas.

@@ -365,7 +365,7 @@ async function centralLoadSavedToken() {
   }
 
   if (result.error) {
-    centralSetStatus('Não foi possível carregar o token salvo. Confira se a migração de credenciais da API central foi aplicada.');
+    centralSetStatus(`Falha ao carregar o token do Supabase (${result.error.code || 'sem código'}): ${result.error.message}`);
     return false;
   }
   if (!isAdmin || currentUser?.id !== adminId) return false;
@@ -386,7 +386,7 @@ async function centralLoadSavedToken() {
 
 async function centralSaveToken(token) {
   if (!isAdmin || !supabaseClient || !currentUser) {
-    centralSetStatus('Entre com uma conta autorizada de árbitro para salvar o token.');
+    centralSetStatus('Entre com uma conta do Supabase para salvar o token.');
     return false;
   }
 
@@ -407,7 +407,7 @@ async function centralSaveToken(token) {
   }
 
   if (result.error) {
-    centralSetStatus('Não foi possível salvar o token. Confira sua permissão de árbitro e se a migração de credenciais foi aplicada.');
+    centralSetStatus(`Falha ao salvar o token no Supabase (${result.error.code || 'sem código'}): ${result.error.message}`);
     return false;
   }
 
@@ -422,7 +422,7 @@ async function centralSaveToken(token) {
 
 async function centralDeleteSavedToken() {
   if (!isAdmin || !supabaseClient) {
-    centralSetStatus('Entre com uma conta autorizada de árbitro para remover o token salvo.');
+    centralSetStatus('Entre com uma conta do Supabase para remover o token salvo.');
     return;
   }
   if (!confirm('Remover o token salvo no Supabase?')) return;
