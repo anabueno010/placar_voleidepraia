@@ -8,16 +8,18 @@ O placar é uma aplicação estática (HTML e JavaScript), publicada pelo GitHub
 
 ## Token e CORS
 
-O token é salvo como texto na tabela `arena_central_api_credentials` do Supabase para que árbitros autorizados possam carregá-lo ao entrar. A tabela tem RLS e somente usuários cadastrados em `arena_admins` podem ler, salvar ou remover o token. Isso é controle de acesso, não criptografia: árbitros autorizados e o navegador podem ver o token durante o uso. O navegador o carrega em memória durante a sessão; sair ou trocar de conta limpa essa cópia. O painel permite salvar, carregar, limpar da memória e apagar o registro salvo. Não use a chave `service_role` do Supabase.
+Todo usuário autenticado no Supabase recebe acesso de árbitro: pode controlar partidas e torneios e ler, salvar ou remover o token em `arena_central_api_credentials`. Visitantes sem login continuam sem permissão de escrita. Isso também significa que qualquer pessoa que consiga criar/usar uma conta neste projeto poderá ver o token central e administrar o placar.
 
-Como o cliente é estático, o token e as requisições autenticadas podem ser vistos por qualquer árbitro autorizado que use as ferramentas do navegador; a RLS impede acesso por visitantes e usuários sem permissão, mas não transforma a aplicação cliente em backend secreto. Se essa exposição aos árbitros autorizados não for aceitável, use um backend/Edge Function com o token como segredo no servidor.
+O token é salvo como texto, sem criptografia adicional, e carregado pelo navegador em memória ao entrar. Sair ou trocar de conta limpa a cópia em memória. O painel permite salvar, carregar, limpar da memória e apagar o registro. Não use a chave `service_role` do Supabase. Se não quiser confiar o token a todo usuário autenticado, use um backend/Edge Function com o segredo no servidor.
+
+Como o cliente é estático, o token e as requisições autenticadas podem ser vistos por qualquer usuário autenticado que use as ferramentas do navegador; a RLS impede acesso de visitantes sem login, mas não transforma a aplicação cliente em backend secreto.
 
 Antes do teste, solicite ao professor a autorização da origem exata do site: protocolo, domínio e porta, sem caminho. No GitHub Pages, use a origem publicada; localmente, `python server.py` escolhe uma porta livre entre 8000 e 8049, então autorize a origem/porta mostrada no terminal. O navegador envia `Origin` e faz o preflight CORS automaticamente. Não configure `Origin` manualmente nem use `no-cors`. CORS não substitui autenticação nem validação de propriedade no servidor.
 
 ## Executar e testar
 
 1. Abra `index.html` pelo GitHub Pages ou execute `python server.py`.
-2. Entre com a conta de árbitro já cadastrada em `arena_admins`.
+2. Entre com uma conta do Supabase. Toda conta autenticada recebe permissão de árbitro.
 3. Peça ao professor o token individual do grupo (não o envie em chats ou commits), informe-o no painel **API central do Interclasse** e selecione **Salvar token**. Nas sessões seguintes, ele é carregado automaticamente; **Carregar salvo** permite buscá-lo novamente.
 4. Crie uma partida de teste com nomes identificáveis do grupo. Ao iniciar, a aplicação salva primeiro o registro local, cria o placar central e associa o ID retornado. Se já houver ID, recarregar não cria outro.
 5. Consulte o ID, marque pontos e encerre a partida pela regra existente (melhor de três sets; sets 1 e 2 até 21, terceiro até 15, sempre por dois). Confirme o placar/status no monitor público e recarregue para verificar que o mesmo ID foi mantido.
@@ -25,4 +27,4 @@ Antes do teste, solicite ao professor a autorização da origem exata do site: p
 
 Erros HTTP e de rede são indicados no painel e os dados locais são preservados. Uma falha ambígua durante o POST bloqueia a repetição automática; confira o monitor/API com o professor antes de usar a ação de nova tentativa confirmada. O ID vinculado permite consultar e sincronizar novamente, e o painel exibe a última confirmação. O polling ocorre a cada 15 segundos enquanto a página está aberta e o token está ativo.
 
-Antes de publicar, aplique a migração `20261123000000_add_central_api_credentials.sql` (o workflow de deploy de migrações executa isso ao enviar alterações em `supabase/**`). O usuário precisa estar autenticado e cadastrado em `arena_admins` para ver o painel e carregar/salvar o token. Os testes reais de API dependem do token do grupo e da autorização CORS do professor. Nenhum token real foi incluído ou usado durante o desenvolvimento.
+Antes de publicar, aplique as migrações `20261123000000_add_central_api_credentials.sql` e `20261123120000_allow_all_authenticated_referees.sql` (o workflow de deploy de migrações executa isso ao enviar alterações em `supabase/**`). Qualquer usuário autenticado pode ver o painel, carregar/salvar o token e alterar partidas/torneios. Os testes reais de API dependem do token do grupo e da autorização CORS do professor. Nenhum token real foi incluído ou usado durante o desenvolvimento.
