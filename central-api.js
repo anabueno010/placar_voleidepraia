@@ -41,7 +41,7 @@ async function centralApiRequest(path, method = 'GET', body) {
       body: body === undefined ? undefined : JSON.stringify(body)
     });
   } catch {
-    throw new CentralApiError(0, 'Falha de rede ou CORS. Confira a conexão e peça ao professor para autorizar a origem exata da aplicação.', true);
+    throw new CentralApiError(0, 'Não foi possível acessar a API central. Confira a conexão e o erro no console do navegador.', true);
   }
 
   let data = null;
@@ -138,7 +138,7 @@ async function centralSaveMatch(match) {
 
 async function centralConsult(match, fromPoll = false) {
   if (!centralApiToken || !match?.centralApiId) return false;
-  const data = await centralApiRequest(`/${encodeURIComponent(match.centralApiId)}`);
+  const data = await centralApiRequest(`/placares/${encodeURIComponent(match.centralApiId)}`);
   const remote = centralRemoteSnapshot(data);
   const desired = centralDesiredSnapshot(match);
   const hasSnapshot = !!match.centralApiLastSynced;
@@ -164,7 +164,7 @@ async function centralSyncNow(match) {
   if (currentMatch !== match || !centralApiToken || !match.centralApiId) return false;
   let baseline = match.centralApiLastSynced;
   if (!baseline) {
-    const data = await centralApiRequest(`/${encodeURIComponent(match.centralApiId)}`);
+    const data = await centralApiRequest(`/placares/${encodeURIComponent(match.centralApiId)}`);
     baseline = centralRemoteSnapshot(data);
     match.centralApiLastSynced = baseline;
   }
@@ -186,7 +186,7 @@ async function centralSyncNow(match) {
   }
 
   centralSetStatus('Sincronizando placar…');
-  const data = await centralApiRequest(`/${encodeURIComponent(match.centralApiId)}`, 'PATCH', patch);
+  const data = await centralApiRequest(`/placares/${encodeURIComponent(match.centralApiId)}`, 'PATCH', patch);
   let confirmed = { ...baseline, ...patch };
   if (data && Number.isInteger(data.pontos_a) && Number.isInteger(data.pontos_b) &&
       ['aguardando', 'em_andamento', 'encerrado'].includes(data.status)) {
