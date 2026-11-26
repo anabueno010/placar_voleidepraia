@@ -30,6 +30,15 @@ drop policy if exists "Scoreboard admins can update central API credentials"
 drop policy if exists "Scoreboard admins can delete central API credentials"
   on public.arena_central_api_credentials;
 
+drop policy if exists "Authenticated users can read central API credentials"
+  on public.arena_central_api_credentials;
+drop policy if exists "Authenticated users can create central API credentials"
+  on public.arena_central_api_credentials;
+drop policy if exists "Authenticated users can update central API credentials"
+  on public.arena_central_api_credentials;
+drop policy if exists "Authenticated users can delete central API credentials"
+  on public.arena_central_api_credentials;
+
 create policy "Authenticated users can read central API credentials"
   on public.arena_central_api_credentials for select to authenticated
   using (true);
