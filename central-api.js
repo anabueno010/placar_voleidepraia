@@ -30,6 +30,7 @@ function centralApiErrorMessage(status) {
 }
 
 async function centralApiRequest(path, method = 'GET', body) {
+  if (!isAdmin) throw new CentralApiError(0, 'Entre com e-mail e senha para usar a API central.');
   if (!centralApiToken) throw new CentralApiError(0, 'Informe o token do grupo para conectar.');
   const headers = { Authorization: `Bearer ${centralApiToken}` };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
@@ -73,10 +74,12 @@ function centralSetStatus(message) {
 }
 
 function centralRenderAccess() {
+  const section = $('#centralIntegration');
   const form = $('#centralCredentialForm');
   const retry = $('#centralRetry');
   const status = $('#centralStatus');
   const lastSync = $('#centralLastSync');
+  if (section) section.classList.toggle('hidden', !isAdmin);
   if (form) form.classList.toggle('hidden', !isAdmin);
   if (status && centralStatusText) status.textContent = centralStatusText;
   if (lastSync) {
@@ -313,7 +316,7 @@ async function centralCreateMatch(match) {
 
 async function centralPoll() {
   const match = currentMatch;
-  if (!centralApiToken || !match?.centralApiId || centralPollInFlight || centralSyncPending || centralSyncInFlight) return;
+  if (!isAdmin || !centralApiToken || !match?.centralApiId || centralPollInFlight || centralSyncPending || centralSyncInFlight) return;
   centralPollInFlight = true;
   centralPollPromise = (async () => {
     try {
@@ -330,7 +333,7 @@ async function centralPoll() {
 
 function centralStartPolling() {
   clearInterval(centralPollTimer);
-  if (centralApiToken) centralPollTimer = setInterval(() => { void centralPoll(); }, 15000);
+  if (isAdmin && centralApiToken) centralPollTimer = setInterval(() => { void centralPoll(); }, 15000);
 }
 
 function centralClearToken() {
@@ -350,6 +353,7 @@ function centralClearToken() {
 }
 
 function centralOnMatchLoaded(match) {
+  if (!isAdmin) return;
   if (match?.centralApiCreateState === 'creating') {
     match.centralApiCreateState = 'uncertain';
     void centralSaveMatch(match);
@@ -363,7 +367,8 @@ function centralOnMatchLoaded(match) {
   if (centralApiToken && match?.centralApiId) void centralPoll();
 }
 
-function setupCentralIntegration() {
+function centralRestoreToken() {
+  if (!isAdmin || centralApiToken) return;
   const remember = $('#centralRememberToken');
   try {
     const savedToken = localStorage.getItem(CENTRAL_TOKEN_STORAGE_KEY);
@@ -376,7 +381,10 @@ function setupCentralIntegration() {
   } catch {
     // O placar continua funcionando sem armazenamento local.
   }
+}
 
+function setupCentralIntegration() {
+  const remember = $('#centralRememberToken');
   remember.onchange = () => {
     try {
       if (remember.checked && centralApiToken) {
@@ -396,6 +404,7 @@ function setupCentralIntegration() {
 
   $('#centralCredentialForm').onsubmit = async event => {
     event.preventDefault();
+    if (!isAdmin) return;
     const token = $('#centralToken').value.trim();
     $('#centralToken').value = '';
     if (!token) {
@@ -421,7 +430,7 @@ function setupCentralIntegration() {
   };
 
   $('#centralRetry').onclick = async () => {
-    if (!currentMatch) return;
+    if (!isAdmin || !currentMatch) return;
     if (currentMatch.centralApiId) await centralPoll();
     else {
       if (currentMatch.centralApiCreateState === 'uncertain') {

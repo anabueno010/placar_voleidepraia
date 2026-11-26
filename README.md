@@ -2,15 +2,15 @@
 
 ## Arquitetura e integração
 
-O placar é uma aplicação estática (HTML e JavaScript), publicada pelo GitHub Pages. O servidor Python (`server.py`) serve os mesmos arquivos para testes locais. Durante os testes, a RLS do Supabase permite administrar partidas sem login e grava cada partida em `arena_matches.data` (JSON); o ID da API central e o estado de sincronização ficam nesse mesmo registro sem mudar o formato das partidas.
+O placar é uma aplicação estática (HTML e JavaScript), publicada pelo GitHub Pages. O servidor Python (`server.py`) serve os mesmos arquivos para testes locais. Visitantes podem acompanhar o placar, mas apenas usuários autenticados com e-mail e senha no Supabase podem criar ou alterar partidas. A RLS protege a escrita em `arena_matches.data` (JSON); o ID da API central e o estado de sincronização ficam nesse mesmo registro sem mudar o formato das partidas.
 
 `central-api.js` conversa diretamente com a API do Interclasse. A criação usa `POST /placares/criar` com modalidade `volei`; o ID retornado fica associado à partida local. Alterações do placar e o encerramento usam PATCH apenas para `pontos_a`, `pontos_b` e `status`. Sets, faltas, cartões, atletas e histórico continuam locais. O sistema de vôlei não tem cronômetro, então não envia `tempo_partida`.
 
-## Acesso temporário e token
+## Acesso e token
 
-Durante os testes, qualquer pessoa que abrir o site pode criar e editar partidas em `arena_matches`, sem fazer login. As alterações são compartilhadas com todos que acessam o mesmo Supabase. Para voltar a exigir login, será necessário reverter o acesso anônimo no cliente e remover as políticas anônimas da migração `20261126000000_allow_anonymous_scoreboard_tests.sql`.
+Use **Entrar** com uma conta de e-mail e senha já cadastrada no Supabase para criar ou editar partidas. A migração `20261126110000_require_login_for_scoreboard_edits.sql` remove a permissão temporária de escrita anônima; a leitura pública do placar continua disponível. As políticas atuais permitem edição a qualquer usuário autenticado neste projeto.
 
-O token da API central é informado no painel. Sem marcar **Lembrar neste navegador**, ele fica apenas em memória até fechar a página ou usar **Limpar token**. Com a opção marcada, fica no `localStorage` deste navegador e é restaurado nas próximas visitas; **Limpar token** também o apaga do armazenamento. Use essa opção apenas em dispositivo de confiança, pois scripts executados na mesma origem podem ler o `localStorage`. O token anteriormente salvo em `arena_central_api_credentials` permanece no banco, mas o modo de testes não o lê, altera ou expõe a visitantes. Não use a chave `service_role` do Supabase no navegador.
+O token da API central é informado no painel após o login. Sem marcar **Lembrar neste navegador**, ele fica apenas em memória até fechar a página ou usar **Limpar token**. Com a opção marcada, fica no `localStorage` deste navegador e é restaurado nas próximas visitas enquanto houver uma sessão autenticada; **Sair** e **Limpar token** também o apagam do armazenamento. Use essa opção apenas em dispositivo de confiança, pois scripts executados na mesma origem podem ler o `localStorage`. O token anteriormente salvo em `arena_central_api_credentials` permanece no banco, mas este modo não o lê nem altera. Não use a chave `service_role` do Supabase no navegador.
 
 ## CORS
 
@@ -19,7 +19,7 @@ A API publicada atualmente responde aos preflights com `Access-Control-Allow-Ori
 ## Executar e testar
 
 1. Abra `index.html` pelo GitHub Pages ou execute `python server.py`.
-2. Abra o placar e use os controles de edição diretamente, sem login.
+2. Para editar, selecione **Entrar** e informe o e-mail e a senha de uma conta existente no Supabase. Sem login, o placar fica somente para leitura.
 3. Para sincronizar com a API central, peça ao professor o token individual do grupo (não o envie em chats ou commits), informe-o no painel **API central do Interclasse** e selecione **Usar token**. Marque **Lembrar neste navegador** se quiser reutilizá-lo após recarregar a página. Gerar outro token no painel administrativo revoga o anterior.
 4. Crie uma partida de teste com nomes identificáveis do grupo. Ao iniciar, a aplicação salva primeiro o registro local, cria o placar central e associa o ID retornado. Se já houver ID, recarregar não cria outro.
 5. Consulte o ID, marque pontos e encerre a partida pela regra existente (melhor de três sets; sets 1 e 2 até 21, terceiro até 15, sempre por dois). Confirme o placar/status no monitor público e recarregue para verificar que o mesmo ID foi mantido.
@@ -27,7 +27,7 @@ A API publicada atualmente responde aos preflights com `Access-Control-Allow-Ori
 
 Erros HTTP e de rede são indicados no painel e os dados locais são preservados. Uma falha ambígua durante o POST bloqueia a repetição automática; confira o monitor/API com o professor antes de usar a ação de nova tentativa confirmada. O ID vinculado permite consultar e sincronizar novamente, e o painel exibe a última confirmação. O polling ocorre a cada 15 segundos enquanto a página está aberta e o token está ativo.
 
-Para que a edição sem login funcione no Supabase publicado, aplique a migração `20261126000000_allow_anonymous_scoreboard_tests.sql` (o workflow de deploy de migrações executa isso ao enviar alterações em `supabase/**`). A migração libera criação e edição de partidas para visitantes, mas não libera acesso anônimo ao token salvo ou a torneios. Os testes reais de API dependem do token do grupo. Nenhum token real foi incluído ou usado durante o desenvolvimento.
+Para impedir alterações sem login no Supabase publicado, aplique a migração `20261126110000_require_login_for_scoreboard_edits.sql` (o workflow de deploy de migrações executa isso ao enviar alterações em `supabase/**`). Os testes reais de API central dependem do token do grupo. Nenhum token real foi incluído ou usado durante o desenvolvimento.
 
 ### Configuração do deploy de migrações
 
