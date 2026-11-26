@@ -2,32 +2,32 @@
 
 ## Arquitetura e integração
 
-O placar é uma aplicação estática (HTML e JavaScript), publicada pelo GitHub Pages. O servidor Python (`server.py`) serve os mesmos arquivos para testes locais. O Supabase Auth/RLS mantém os árbitros autorizados e grava cada partida em `arena_matches.data` (JSON); o ID da API central e o estado de sincronização ficam nesse mesmo registro sem mudar o formato das partidas.
+O placar é uma aplicação estática (HTML e JavaScript), publicada pelo GitHub Pages. O servidor Python (`server.py`) serve os mesmos arquivos para testes locais. Durante os testes, a RLS do Supabase permite administrar partidas sem login e grava cada partida em `arena_matches.data` (JSON); o ID da API central e o estado de sincronização ficam nesse mesmo registro sem mudar o formato das partidas.
 
 `central-api.js` conversa diretamente com a API do Interclasse. A criação usa `POST /placares/criar` com modalidade `volei`; o ID retornado fica associado à partida local. Alterações do placar e o encerramento usam PATCH apenas para `pontos_a`, `pontos_b` e `status`. Sets, faltas, cartões, atletas e histórico continuam locais. O sistema de vôlei não tem cronômetro, então não envia `tempo_partida`.
 
-## Token e CORS
+## Acesso temporário e token
 
-Todo usuário autenticado no Supabase recebe acesso de árbitro: pode controlar partidas e torneios e ler, salvar ou remover o token em `arena_central_api_credentials`. Visitantes sem login continuam sem permissão de escrita. Isso também significa que qualquer pessoa que consiga criar/usar uma conta neste projeto poderá ver o token central e administrar o placar.
+Durante os testes, qualquer pessoa que abrir o site pode criar e editar partidas em `arena_matches`, sem fazer login. As alterações são compartilhadas com todos que acessam o mesmo Supabase. Para voltar a exigir login, será necessário reverter o acesso anônimo no cliente e remover as políticas anônimas da migração `20261126000000_allow_anonymous_scoreboard_tests.sql`.
 
-O token é salvo como texto, sem criptografia adicional, e carregado pelo navegador em memória ao entrar. Sair ou trocar de conta limpa a cópia em memória. O painel permite salvar, carregar, limpar da memória e apagar o registro. Não use a chave `service_role` do Supabase. Se não quiser confiar o token a todo usuário autenticado, use um backend/Edge Function com o segredo no servidor.
+O token da API central é informado em cada aba e mantido apenas em memória até fechar a página ou usar **Limpar token**. O token anteriormente salvo em `arena_central_api_credentials` permanece no banco, mas o modo de testes não o lê, altera ou expõe a visitantes. Não use a chave `service_role` do Supabase no navegador.
 
-Como o cliente é estático, o token e as requisições autenticadas podem ser vistos por qualquer usuário autenticado que use as ferramentas do navegador; a RLS impede acesso de visitantes sem login, mas não transforma a aplicação cliente em backend secreto.
+## CORS
 
 Antes do teste, solicite ao professor a autorização da origem exata do site: protocolo, domínio e porta, sem caminho. No GitHub Pages, use a origem publicada; localmente, `python server.py` escolhe uma porta livre entre 8000 e 8049, então autorize a origem/porta mostrada no terminal. O navegador envia `Origin` e faz o preflight CORS automaticamente. Não configure `Origin` manualmente nem use `no-cors`. CORS não substitui autenticação nem validação de propriedade no servidor.
 
 ## Executar e testar
 
 1. Abra `index.html` pelo GitHub Pages ou execute `python server.py`.
-2. Entre com uma conta do Supabase. Toda conta autenticada recebe permissão de árbitro.
-3. Peça ao professor o token individual do grupo (não o envie em chats ou commits), informe-o no painel **API central do Interclasse** e selecione **Salvar token**. Nas sessões seguintes, ele é carregado automaticamente; **Carregar salvo** permite buscá-lo novamente.
+2. Abra o placar e use os controles de edição diretamente, sem login.
+3. Para sincronizar com a API central, peça ao professor o token individual do grupo (não o envie em chats ou commits), informe-o no painel **API central do Interclasse** e selecione **Usar token**. Informe novamente o token ao recarregar a página.
 4. Crie uma partida de teste com nomes identificáveis do grupo. Ao iniciar, a aplicação salva primeiro o registro local, cria o placar central e associa o ID retornado. Se já houver ID, recarregar não cria outro.
 5. Consulte o ID, marque pontos e encerre a partida pela regra existente (melhor de três sets; sets 1 e 2 até 21, terceiro até 15, sempre por dois). Confirme o placar/status no monitor público e recarregue para verificar que o mesmo ID foi mantido.
 6. Confira no DevTools o preflight `OPTIONS` e as respostas da API (`201` na criação; `200` na consulta/atualização). Teste token inválido, origem não autorizada e falha de rede sem usar placares de outros grupos.
 
 Erros HTTP e de rede são indicados no painel e os dados locais são preservados. Uma falha ambígua durante o POST bloqueia a repetição automática; confira o monitor/API com o professor antes de usar a ação de nova tentativa confirmada. O ID vinculado permite consultar e sincronizar novamente, e o painel exibe a última confirmação. O polling ocorre a cada 15 segundos enquanto a página está aberta e o token está ativo.
 
-Antes de publicar, aplique as migrações `20261123000000_add_central_api_credentials.sql` e `20261123120000_allow_all_authenticated_referees.sql` (o workflow de deploy de migrações executa isso ao enviar alterações em `supabase/**`). Qualquer usuário autenticado pode ver o painel, carregar/salvar o token e alterar partidas/torneios. Os testes reais de API dependem do token do grupo e da autorização CORS do professor. Nenhum token real foi incluído ou usado durante o desenvolvimento.
+Para que a edição sem login funcione no Supabase publicado, aplique a migração `20261126000000_allow_anonymous_scoreboard_tests.sql` (o workflow de deploy de migrações executa isso ao enviar alterações em `supabase/**`). A migração libera criação e edição de partidas para visitantes, mas não libera acesso anônimo ao token salvo ou a torneios. Os testes reais de API dependem do token do grupo e da autorização CORS do professor. Nenhum token real foi incluído ou usado durante o desenvolvimento.
 
 ### Configuração do deploy de migrações
 
