@@ -10,7 +10,7 @@ O placar é uma aplicação estática (HTML e JavaScript), publicada pelo GitHub
 
 Durante os testes, qualquer pessoa que abrir o site pode criar e editar partidas em `arena_matches`, sem fazer login. As alterações são compartilhadas com todos que acessam o mesmo Supabase. Para voltar a exigir login, será necessário reverter o acesso anônimo no cliente e remover as políticas anônimas da migração `20261126000000_allow_anonymous_scoreboard_tests.sql`.
 
-O token da API central é informado em cada aba e mantido apenas em memória até fechar a página ou usar **Limpar token**. O token anteriormente salvo em `arena_central_api_credentials` permanece no banco, mas o modo de testes não o lê, altera ou expõe a visitantes. Não use a chave `service_role` do Supabase no navegador.
+O token da API central é informado no painel. Sem marcar **Lembrar neste navegador**, ele fica apenas em memória até fechar a página ou usar **Limpar token**. Com a opção marcada, fica no `localStorage` deste navegador e é restaurado nas próximas visitas; **Limpar token** também o apaga do armazenamento. Use essa opção apenas em dispositivo de confiança, pois scripts executados na mesma origem podem ler o `localStorage`. O token anteriormente salvo em `arena_central_api_credentials` permanece no banco, mas o modo de testes não o lê, altera ou expõe a visitantes. Não use a chave `service_role` do Supabase no navegador.
 
 ## CORS
 
@@ -20,7 +20,7 @@ A API publicada atualmente responde aos preflights com `Access-Control-Allow-Ori
 
 1. Abra `index.html` pelo GitHub Pages ou execute `python server.py`.
 2. Abra o placar e use os controles de edição diretamente, sem login.
-3. Para sincronizar com a API central, peça ao professor o token individual do grupo (não o envie em chats ou commits), informe-o no painel **API central do Interclasse** e selecione **Usar token**. Informe novamente o token ao recarregar a página.
+3. Para sincronizar com a API central, peça ao professor o token individual do grupo (não o envie em chats ou commits), informe-o no painel **API central do Interclasse** e selecione **Usar token**. Marque **Lembrar neste navegador** se quiser reutilizá-lo após recarregar a página. Gerar outro token no painel administrativo revoga o anterior.
 4. Crie uma partida de teste com nomes identificáveis do grupo. Ao iniciar, a aplicação salva primeiro o registro local, cria o placar central e associa o ID retornado. Se já houver ID, recarregar não cria outro.
 5. Consulte o ID, marque pontos e encerre a partida pela regra existente (melhor de três sets; sets 1 e 2 até 21, terceiro até 15, sempre por dois). Confirme o placar/status no monitor público e recarregue para verificar que o mesmo ID foi mantido.
 6. Confira no DevTools o preflight `OPTIONS` e as respostas da API (`201` na criação; `200` na consulta/atualização). Teste token inválido e falha de rede sem usar placares de outros grupos.

@@ -1,4 +1,5 @@
 const CENTRAL_API_BASE = 'https://rvarjao.pythonanywhere.com/api';
+const CENTRAL_TOKEN_STORAGE_KEY = 'arena_central_api_token';
 let centralApiToken = '';
 let centralSyncQueue = Promise.resolve();
 let centralSyncTimer = null;
@@ -338,7 +339,14 @@ function centralClearToken() {
   clearTimeout(centralSyncTimer);
   const input = $('#centralToken');
   if (input) input.value = '';
-  centralSetStatus('Token removido da memória desta sessão.');
+  const remember = $('#centralRememberToken');
+  if (remember) remember.checked = false;
+  try {
+    localStorage.removeItem(CENTRAL_TOKEN_STORAGE_KEY);
+    centralSetStatus('Token removido desta aba e deste navegador.');
+  } catch {
+    centralSetStatus('Token removido desta aba. Não foi possível acessar o armazenamento do navegador.');
+  }
 }
 
 function centralOnMatchLoaded(match) {
@@ -356,6 +364,36 @@ function centralOnMatchLoaded(match) {
 }
 
 function setupCentralIntegration() {
+  const remember = $('#centralRememberToken');
+  try {
+    const savedToken = localStorage.getItem(CENTRAL_TOKEN_STORAGE_KEY);
+    if (savedToken) {
+      centralApiToken = savedToken;
+      remember.checked = true;
+      centralStartPolling();
+      centralSetStatus('Token restaurado deste navegador.');
+    }
+  } catch {
+    // O placar continua funcionando sem armazenamento local.
+  }
+
+  remember.onchange = () => {
+    try {
+      if (remember.checked && centralApiToken) {
+        localStorage.setItem(CENTRAL_TOKEN_STORAGE_KEY, centralApiToken);
+        centralSetStatus('Token lembrado neste navegador.');
+      } else {
+        localStorage.removeItem(CENTRAL_TOKEN_STORAGE_KEY);
+        centralSetStatus(centralApiToken
+          ? 'Token ativo nesta aba; não será lembrado após fechar a página.'
+          : 'Informe um token para lembrá-lo neste navegador.');
+      }
+    } catch {
+      remember.checked = false;
+      centralSetStatus('Não foi possível salvar o token neste navegador. Ele permanece ativo nesta aba.');
+    }
+  };
+
   $('#centralCredentialForm').onsubmit = async event => {
     event.preventDefault();
     const token = $('#centralToken').value.trim();
@@ -366,7 +404,18 @@ function setupCentralIntegration() {
     }
     centralApiToken = token;
     centralStartPolling();
-    centralSetStatus('Token ativo nesta aba.');
+    if (remember.checked) {
+      try {
+        localStorage.setItem(CENTRAL_TOKEN_STORAGE_KEY, token);
+        centralSetStatus('Token ativo e lembrado neste navegador.');
+      } catch {
+        remember.checked = false;
+        centralSetStatus('Token ativo nesta aba. Não foi possível salvá-lo neste navegador.');
+      }
+    } else {
+      try { localStorage.removeItem(CENTRAL_TOKEN_STORAGE_KEY); } catch { /* Armazenamento indisponível. */ }
+      centralSetStatus('Token ativo nesta aba.');
+    }
     if (currentMatch?.centralApiId) await centralPoll();
     centralRenderAccess();
   };
